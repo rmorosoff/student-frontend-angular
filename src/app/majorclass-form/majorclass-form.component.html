@@ -1,0 +1,45 @@
+<ol class="breadcrumb">
+  <li><a routerLink="/home">Home</a></li>
+  <li><a routerLink="/majorclass">Majorclasses</a></li>
+  <li class="active">Manage Major Class Relationship</li>
+</ol>
+
+<br/>
+
+<a class="btn btn-primary" routerLink="/majorclass">Return to Majorclasses</a>
+
+<h1>Manage Major Class Relationship</h1>
+
+<app-status-message [successMessage]="successMessage" [errorMessage]="errorMessage"></app-status-message>
+
+<form novalidate (ngSubmit)="saveMajorclass(majorclassForm)"  #majorclassForm="ngForm" class="form-horizontal">
+<input [ngModel]="majorclass?.major_class_id" ngModel #major_class_id="ngModel" type="hidden" name="major_class_id">
+<div class="form-group">
+  <label for="major" class="col-sm-2 control-label">Major</label>
+  <div class="col-sm-10">
+      <select [ngModel]="majorclass?.major?.major_id" ngModel #major_id="ngModel" type="text" class="form-control" id="major_id" name="major_id">
+          <option *ngFor="let major of majors"
+            [value]="major.major_id">
+               {{major?.major}}
+          </option>
+       </select>
+  </div>
+</div>
+<div class="form-group">
+  <label for="class" class="col-sm-2 control-label">Class</label>
+  <div class="col-sm-10">
+      <select [ngModel]="majorclass?.class?.class_id" ngModel #class_id="ngModel" type="text" class="form-control" id="class_id" name="class_id">
+          <option *ngFor="let class of classes"
+            [value]="class.class_id">
+               {{class?.subject}} {{class?.course}}
+          </option>
+       </select>
+  </div>
+</div>
+<div class="form-group">
+  <div class="col-sm-offset-2 col-sm-10">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</div>
+</form>
+
