@@ -1,17 +1,23 @@
 import 'rxjs/add/operator/switchMap';
-import { Component, OnInit }      from '@angular/core';
+import { Component, OnInit, ViewChild }      from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location }               from '@angular/common';
 import { NgForm } from '@angular/forms';
 
-import { DataService } from '../data.service'
+import { DataService } from '../data.service';
+import { fadeInAnimation } from '../animations/fade-in.animation';
+
 
 @Component({
   selector: 'app-assignment-form',
   templateUrl: './assignment-form.component.html',
-  styleUrls: ['./assignment-form.component.css']
+  styleUrls: ['./assignment-form.component.css'],
+  animations: [fadeInAnimation]
 })
 export class AssignmentFormComponent implements OnInit {
+
+  assignmentForm: NgForm;
+  @ViewChild('assignmentForm') currentForm: NgForm;
 
   successMessage: string;
   errorMessage: string;
@@ -82,6 +88,45 @@ export class AssignmentFormComponent implements OnInit {
     }
 
   }
+
+  ngAfterViewChecked() {
+    this.formChanged();
+  }
+
+  formChanged() {
+    this.assignmentForm = this.currentForm;
+    this.assignmentForm.valueChanges
+      .subscribe(
+        data => this.onValueChanged(data)
+      );
+  }
+
+  onValueChanged(data?: any) {
+    let form = this.assignmentForm.form;
+
+    for (let field in this.formErrors) {
+      // clear previous error message (if any)
+      this.formErrors[field] = '';
+      const control = form.get(field);
+
+      if (control && control.dirty && !control.valid) {
+        const messages = this.validationMessages[field];
+        for (const key in control.errors) {
+          this.formErrors[field] += messages[key] + ' ';
+        }
+      }
+    }
+  }
+  formErrors = {
+    'assignment_nbr': ''
+  };
+
+  validationMessages = {
+    'assignment_nbr': {
+      'required': 'Assignment Number is required.',
+      'pattern': 'Assignment Number must be an integer.'
+    }
+  };
 
 }
 
